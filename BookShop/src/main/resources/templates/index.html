@@ -4,5 +4,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Index</title>
 </head>
-<body>Hello, World!</body>
+<body>
+Existing books list
+<div th:each="book: ${books}">
+    <td th:text="${book.title}"></td>
+    <td th:text="${book.author}"></td>
+    <td th:text="${book.isbn}"></td>
+</div>
+<form action="/add-book" method="post">
+    <div>Title<input name="title"/></div>
+    <div>Author<input name="author"/></div>
+    <div>ISBN<input name="isbn"/></div>
+    <button type="submit">Add book</button>
+</form>
+</body>
 </html>
