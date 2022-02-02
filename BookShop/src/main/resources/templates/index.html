@@ -11,10 +11,7 @@ Existing books list
     <td th:text="${book.author}"></td>
     <td th:text="${book.isbn}"></td>
 </div>
-<form action="/add-book" method="post">
-    <div>Title<input name="title"/></div>
-    <div>Author<input name="author"/></div>
-    <div>ISBN<input name="isbn"/></div>
+<form action="/books-list" method="post">
     <button type="submit">Add book</button>
 </form>
 </body>

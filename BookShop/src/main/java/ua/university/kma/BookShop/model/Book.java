@@ -42,4 +42,13 @@ public class Book {
         this.isbn = bookDto.getIsbn();
         this.author = bookDto.getAuthor();
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Book))return false;
+
+        Book b = (Book)o;
+
+        return (this.title.equals(b.title))&&(this.author.equals(b.author))&&(this.isbn.equals(b.isbn));
+    }
 }
