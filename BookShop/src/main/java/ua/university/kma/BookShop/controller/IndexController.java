@@ -23,22 +23,11 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping(value = "/books-list", method = RequestMethod.POST)
-    public String redirectToAdd() {
-        return "redirect:/add-book";
-    }
-
     @RequestMapping(value = "/add-book", method = RequestMethod.POST)
     public String addNewBook(BookDto bookDto) {
         dbm.addBook(bookDto);
         return "redirect:/books-list";
     }
-
-    @RequestMapping(value = "/add-book", method = RequestMethod.GET)
-    public String showForm() {
-        return "add-form";
-    }
-
 
 
 }
