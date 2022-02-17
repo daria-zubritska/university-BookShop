@@ -1,21 +1,117 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Index</title>
 </head>
 <body>
-Existing books list
-<div th:each="book: ${books}">
-    <td th:text="${book.title}"></td>
-    <td th:text="${book.author}"></td>
-    <td th:text="${book.isbn}"></td>
-</div>
-<form action="/add-book" method="post">
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<form id="searchForm">
+    <label>Search:</label>
+    <input type="text" name="searchInput">
+    <button type="submit">Filter books</button>
+</form>
+
+<h3>Books list</h3>
+<table>
+    <thead>
+    <th>Title</th>
+    <th>Author</th>
+    <th>ISBN</th>
+    </thead>
+    <tbody id="bookTable">
+
+    </tbody>
+</table>
+
+<button id="showBooks">Renew books</button>
+
+
+<form id="bookForm">
     <div>Title<input name="title"/></div>
     <div>Author<input name="author"/></div>
     <div>ISBN<input name="isbn"/></div>
     <button type="submit">Save book</button>
 </form>
+
+<div id="loginResponse">
+
+</div>
+
+<script>
+    $(function () {
+        $('#bookForm').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: '/add-book',
+                dataType: 'json',
+                data: JSON.stringify({
+                    title: $(this).find('[name=title]').val(),
+                    author: $(this).find('[name=author]').val(),
+                    isbn: $(this).find('[name=isbn]').val()
+                }),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                },
+                success: function (response) {
+                $('#loginResponse').text(JSON.stringify(response));
+            }
+            });
+        });
+
+        $('#showBooks').click(function () {
+            var $books = $('#bookTable');
+            $books.empty();
+
+            $.ajax({
+                url: '/show-books',
+                success: function (response) {
+                    response.forEach(function (book) {
+                        $books.append('<tr><td>' + book.title + '</td><td>' + book.author + '</td><td>' + book.isbn + '</td></tr>');
+                    })
+                }
+            });
+        });
+
+        $(function () {
+            $('#searchForm').submit(function (e) {
+                e.preventDefault();
+
+                var $books = $('#bookTable');
+                $books.empty();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/filter-book',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        search: $(this).find('[name=searchInput]').val(),
+                    }),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Content-Type', 'application/json')
+                    },
+                    success: function (response) {
+                        response.forEach(function (book) {
+                            $books.append('<tr><td>' + book.title + '</td><td>' + book.author + '</td><td>' + book.isbn + '</td></tr>');
+                        })
+                    }
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package ua.university.kma.BookShop.model;
+package ua.university.kma.BookShop.dto.model;
 
 import ua.university.kma.BookShop.dto.BookDto;
 
