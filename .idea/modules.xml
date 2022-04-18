@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BookShop/BookShop.iml" filepath="$PROJECT_DIR$/BookShop/BookShop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BookShop/my-starter/my-starter.iml" filepath="$PROJECT_DIR$/BookShop/my-starter/my-starter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BookShop/my-starter-client/my-starter-client.iml" filepath="$PROJECT_DIR$/BookShop/my-starter-client/my-starter-client.iml" />
     </modules>
   </component>
 </project>
