@@ -2,11 +2,32 @@ package ua.university.kma.BookShop.dto.model;
 
 import ua.university.kma.BookShop.dto.BookDto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "books")
 public class Book {
+    @Id
+    @Column(name = "isbn", nullable = false)
+    private String isbn;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "author")
+    private String author;
+
     public Book(String title, String isbn, String author) {
         this.author = author;
         this.isbn = isbn;
         this.title = title;
+    }
+
+    public Book() {
+
     }
 
     public String getTitle() {
@@ -33,9 +54,7 @@ public class Book {
         this.author = author;
     }
 
-    private String title;
-    private String isbn;
-    private String author;
+
 
     public Book(BookDto bookDto) {
         this.title = bookDto.getTitle();
