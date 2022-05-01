@@ -1,10 +1,9 @@
 package ua.university.kma.BookShop.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.university.kma.BookShop.dto.model.Book;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +11,8 @@ import java.util.List;
 @Service("bookService")
 public class BookService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Transactional
     public Book addBook(String isbn, String author, String title){
@@ -21,22 +20,22 @@ public class BookService {
         book.setIsbn(isbn);
         book.setAuthor(author);
         book.setTitle(title);
-        return entityManager.merge(book);
+        return bookRepository.save(book);
     }
 
     @Transactional
     public Book getBookByIsbn(String isbn){
-        return entityManager.find(Book.class, isbn);
+        return bookRepository.findBookByIsbn(isbn);
     }
 
     @Transactional
     public List<Book> findAllBooks(){
-        return entityManager.createQuery("FROM Book", Book.class).getResultList();
+        return bookRepository.findAll();
     }
 
     @Transactional
     public List<Book> filterBooks(String req){
-        List<Book> allBooks = entityManager.createQuery("FROM Book", Book.class).getResultList();
+        List<Book> allBooks = bookRepository.findAll();
 
             List<Book> resp = new ArrayList<>();
             for (Book b : allBooks) {
