@@ -45,7 +45,7 @@
     <button type="submit">Save book</button>
 </form>
 
-<div id="loginResponse">
+<div id="saveResponse">
 
 </div>
 
@@ -67,7 +67,7 @@
                     xhr.setRequestHeader('Content-Type', 'application/json')
                 },
                 success: function (response) {
-                $('#loginResponse').text(JSON.stringify(response));
+                $('#saveResponse').text(JSON.stringify(response.response));
             }
             });
         });
