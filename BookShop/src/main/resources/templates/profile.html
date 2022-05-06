@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Info</title>
+</head>
+<body>
+
+Wish List
+<div>
+    <ul th:each="book: ${books}">
+        <li th:text="'title=' + ${book.title}"></li>
+        <li th:text="'isbn=' + ${book.isbn}"></li>
+        <li th:text="'author' + ${book.author}"></li>
+    </ul>
+</div>
+</body>
+</html>

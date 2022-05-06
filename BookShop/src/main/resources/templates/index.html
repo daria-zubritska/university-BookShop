@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Index</title>
@@ -16,6 +19,14 @@
     }
 </style>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<ul>
+    <li sec:authorize="isAnonymous()"><a class="nav-link" href="/login">Login</a></li>
+    <li sec:authorize="isAnonymous()"><a class="nav-link" href="/register">Register</a></li>
+
+    <li sec:authorize="isAuthenticated()"><a class="nav-link" href="/logout">Logout</a></li>
+    <li sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"></span></li>
+</ul>
 
 <form id="searchForm">
     <label>Search:</label>
@@ -80,7 +91,10 @@
                 url: '/show-books',
                 success: function (response) {
                     response.forEach(function (book) {
-                        $books.append('<tr><td>' + book.title + '</td><td>' + book.author + '</td><td><a href="/book/' + book.isbn + '">' + book.isbn + '</a></td></tr>');
+                        $books.append('<tr><td>' + book.title + '</td><td>' +
+                            book.author + '</td><td><a href="/book/' +
+                            book.isbn + '">' +
+                            book.isbn + '</a></td></tr>');
                     })
                 }
             });

@@ -3,6 +3,7 @@ package ua.university.kma.BookShop.db;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ua.university.kma.BookShop.Service.BookService;
 import ua.university.kma.BookShop.dto.model.Book;
 
 import java.util.List;
