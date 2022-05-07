@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import ua.university.kma.BookShop.Config.MyPasswordEncoder;
 import ua.university.kma.BookShop.Service.BookService;
 import ua.university.kma.BookShop.Service.UserService;
-import ua.university.kma.BookShop.db.WishListRepository;
 import ua.university.kma.BookShop.dto.BookDto;
 import ua.university.kma.BookShop.dto.model.Book;
 import ua.university.kma.BookShop.dto.model.User;
-import ua.university.kma.BookShop.dto.model.WishList;
+//import ua.university.kma.BookShop.dto.model.WishList;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Controller
 public class IndexController {
@@ -29,9 +29,6 @@ public class IndexController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private WishListRepository wishListRepository;
 
     @Autowired
     private MyPasswordEncoder myPasswordEncoder;
@@ -45,43 +42,46 @@ public class IndexController {
     }
 
     @RequestMapping({"/register", ""})
-    public String register(){
+    public String register() {
         return "register";
     }
 
     @RequestMapping({"/book/{isbn}", ""})
-    public String showInfoPage(@PathVariable(name = "isbn") String isbn, Model model) {
+    public String showInfoPage(@PathVariable(name = "isbn") String isbn, HttpSession session) {
         Book book = bookService.getBookByIsbn(isbn);
         if (book != null) {
 
-            boolean liked = false;
+            String liked = "no";
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 String currentUserName = authentication.getName();
 
-                List<Book> likedList = userService.getUserByUsername(currentUserName).getWishList().getBooks();
+                Set<Book> likedBooks = userService.getUserByUsername(currentUserName).getLikedBooks();
 
-                liked = likedList.contains(book);
+                if(likedBooks != null) {
+                    liked = likedBooks.contains(book)? "yes" : "no";
+                }
             }
 
-            BookDto bookDto = new BookDto(book, true);
-            model.addAttribute("book", bookDto);
+            BookDto bookDto = new BookDto(book, liked);
+            session.setAttribute("book", bookDto);
             return "book";
         }
         return "wrong_id_book";
     }
 
-    @RequestMapping ({"/profile", ""})
-    public String getWishList(Model model, Authentication authentication){
+    @RequestMapping({"/profile", ""})
+    public String getWishList(Model model, Authentication authentication) {
 
         User user = userService.getUserByUsername(authentication.getName());
 
-        WishList wishList = user.getWishList();
+        Set<Book> likedBooks = user.getLikedBooks();
 
-        if(wishList == null)
-            model.addAttribute("books", new ArrayList<Book>());
-        else model.addAttribute("books", wishList.getBooks());
+        if (likedBooks == null)
+            likedBooks = new HashSet<>();
+
+        model.addAttribute("books", likedBooks);
 
         return "profile";
     }
@@ -108,18 +108,46 @@ public class IndexController {
         return "redirect:/";
     }
 
-//    @RequestMapping(value = "/add-to-wish", method = RequestMethod.POST)
-//    public String addToWishlist(Model model){
-//        BookDto bookToLike = (BookDto) model.getAttribute("book");
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//            String currentUserName = authentication.getName();
-//
-//            User user = userService.getUserByUsername(currentUserName);
-//
-//            wishListRepository.save();
-//        }
-//    }
+    @PostMapping("/add-to-wish")
+    public String addToWishList(Authentication authentication, HttpSession session) {
+        if (authentication == null)
+            return "redirect:/";
+
+        BookDto book = (BookDto) session.getAttribute("book");
+
+        String bookIsbn = book.getIsbn();
+
+        User byLogin = userService.getUserByUsername(authentication.getName());
+        Set<Book> likedBooks = byLogin.getLikedBooks();
+
+        if(likedBooks == null) likedBooks = new HashSet<>();
+
+        likedBooks.add(bookService.getBookByIsbn(bookIsbn));
+
+        userService.save(byLogin);
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/delete-from-wish")
+    public String deleteFromWishList(Authentication authentication, HttpSession session) {
+        if (authentication == null)
+            return "redirect:/";
+
+        BookDto book = (BookDto) session.getAttribute("book");
+
+        String bookIsbn = book.getIsbn();
+
+        User byLogin = userService.getUserByUsername(authentication.getName());
+        Set<Book> likedBooks = byLogin.getLikedBooks();
+
+        if(likedBooks == null) likedBooks = new HashSet<>();
+
+        likedBooks.remove(bookService.getBookByIsbn(bookIsbn));
+
+        userService.save(byLogin);
+
+        return "redirect:/profile";
+    }
 
 }

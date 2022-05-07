@@ -6,27 +6,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import ua.university.kma.BookShop.Config.MyPasswordEncoder;
 import ua.university.kma.BookShop.Service.BookService;
 import ua.university.kma.BookShop.Service.UserService;
-import ua.university.kma.BookShop.db.UserRepository;
-import ua.university.kma.BookShop.db.WishListRepository;
 import ua.university.kma.BookShop.dto.AddResponseDto;
-import ua.university.kma.BookShop.dto.BookDto;
 import ua.university.kma.BookShop.dto.FilterResponseDto;
 import ua.university.kma.BookShop.dto.model.Book;
-import ua.university.kma.BookShop.dto.model.User;
-import ua.university.kma.BookShop.dto.model.WishList;
+//import ua.university.kma.BookShop.dto.model.WishList;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -40,16 +28,13 @@ public class MyRestController {
     private UserService userService;
 
     @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
     private MyPasswordEncoder myPasswordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @RequestMapping(value = "/add-book", method = RequestMethod.POST)
-    public ResponseEntity<AddResponseDto> add(@RequestBody final BookDto bookDto) {
+    public ResponseEntity<AddResponseDto> add(@RequestBody final Book bookDto) {
 
         if (bookDto.getIsbn() == "" || bookDto.getTitle() == "" || bookDto.getAuthor() == "") {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -91,21 +76,6 @@ public class MyRestController {
         }
     }
 
-    @GetMapping("/wishlist")
-    public String addToWishList(@RequestParam(name = "isbn") String bookIsbn, Authentication authentication) {
-        if (authentication == null)
-            return "No authenticated";
 
-        User byLogin = userService.getUserByUsername(authentication.getName());
-        WishList wishList = byLogin.getWishList();
-
-        if (wishList == null)
-            wishList = new WishList();
-
-        wishList.getBooks().add(bookService.getBookByIsbn(bookIsbn));
-        wishList.setUser(byLogin);
-        wishListRepository.save(wishList);
-        return "Action approved for " + authentication.getAuthorities();
-    }
 
 }

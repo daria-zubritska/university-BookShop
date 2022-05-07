@@ -30,7 +30,16 @@ public class BookDto {
     private String title;
     private String isbn;
     private String author;
-    private boolean liked = false;
+
+    public String getLiked() {
+        return liked;
+    }
+
+    public void setLiked(String liked) {
+        this.liked = liked;
+    }
+
+    private String liked = "no";
 
     public BookDto(String title, String isbn, String author){
         this.author = author;
@@ -38,7 +47,7 @@ public class BookDto {
         this.title = title;
     }
 
-    public BookDto(Book book, boolean liked){
+    public BookDto(Book book, String liked){
         this.author = book.getAuthor();
         this.isbn = book.getIsbn();
         this.title = book.getTitle();

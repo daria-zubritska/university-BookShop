@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Index</title>
@@ -26,6 +24,7 @@
 
     <li sec:authorize="isAuthenticated()"><a class="nav-link" href="/logout">Logout</a></li>
     <li sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"></span></li>
+    <li sec:authorize="isAuthenticated()"><a href="/profile">Profile</a></li>
 </ul>
 
 <form id="searchForm">
@@ -34,6 +33,7 @@
     <button type="submit">Filter books</button>
 </form>
 
+<div>To like the book log in and go to the book`s page</div>
 <h3>Books list</h3>
 <table>
     <thead>

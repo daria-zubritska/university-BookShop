@@ -6,13 +6,28 @@
 </head>
 <body>
 
-Wish List
-<div>
-    <ul th:each="book: ${books}">
-        <li th:text="'title=' + ${book.title}"></li>
-        <li th:text="'isbn=' + ${book.isbn}"></li>
-        <li th:text="'author' + ${book.author}"></li>
-    </ul>
-</div>
+<a href="/">Main page</a>
+
+<div>Your liked books:</div>
+
+<table>
+    <thead>
+    <th>Title</th>
+    <th>Author</th>
+    <th>ISBN</th>
+    </thead>
+    <tbody>
+
+    <tr th:if="${books.isEmpty()}">
+        <td colspan="2"> No Books Liked </td>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td>ISBN: <span th:text="${book.getIsbn()}">  </span></td>
+        <td>Title: <span th:text="${book.getTitle()}">  </span></td>
+        <td>Author: <span th:text="${book.getAuthor()}">  </span></td>
+    </tr>
+
+    </tbody>
+</table>
 </body>
 </html>

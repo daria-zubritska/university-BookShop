@@ -8,24 +8,67 @@
 </head>
 <body>
 
-<tbody id="booksTable">
-<div>Title: <td th:text="${book.title}"></td></div>
-<div>ISBN: <td th:text="${book.isbn}"></td></div>
-<div>Author: <td th:text="${book.author}"></td></div>
-<div sec:authorize="isAuthenticated()">
-    <c:choose>
-        <c:when test="${book.liked}">
-            <form action="/delete-from-wish" method="post"><button type="submit">Is liked</button></form>
-        </c:when>
 
-        <c:otherwise>
-            <form action="/add-to-wish" method="post"><button >Like</button></form>
-        </c:otherwise>
-    </c:choose>
+<div sec:authorize="isAuthenticated()">
+
+        <div th:if="${session.book.liked == 'yes'}">
+
+            <form action="/delete-from-wish" method="post">
+
+                <tbody id="booksTableYes">
+                <div>Title:
+                    <span name="title" th:text="${session.book.title}"></span>
+                </div>
+                <div>ISBN:
+                    <span name="isbn" th:text="${session.book.isbn}"></span>
+                </div>
+                <div>Author:
+                    <span name="author" th:text="${session.book.author}"></span>
+                </div>
+                </tbody>
+
+                <button type="submit">Is liked</button>
+            </form>
+        </div>
+
+        <div th:if="${session.book.liked == 'no'}">
+
+            <form action="/add-to-wish" method="post">
+
+            <tbody id="booksTableNo">
+            <div>Title:
+                <span name="title" th:text="${session.book.title}"></span>
+            </div>
+            <div>ISBN:
+                <span name="isbn" th:text="${session.book.isbn}"></span>
+            </div>
+            <div>Author:
+                <span name="author" th:text="${session.book.author}"></span>
+            </div>
+            </tbody>
+
+                <button type="submit">Like</button>
+            </form>
+        <div/>
+    </div>
 
 </div>
-</tr>
-</tbody>
+
+<div sec:authorize="isAnonymous()">
+
+    <tbody id="booksTableAnon">
+    <div>Title:
+        <span name="title" th:text="${session.book.title}"></span>
+    </div>
+    <div>ISBN:
+        <span name="isbn" th:text="${session.book.isbn}"></span>
+    </div>
+    <div>Author:
+        <span name="author" th:text="${session.book.author}"></span>
+    </div>
+    </tbody>
+
+</div>
 
 </body>
 </html>

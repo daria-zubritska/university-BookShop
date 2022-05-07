@@ -2,16 +2,13 @@ package ua.university.kma.BookShop.dto.model;
 
 import ua.university.kma.BookShop.dto.BookDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "books")
 public class Book {
     @Id
-    @Column(name = "isbn", nullable = false)
+    @Column(name = "isbn", nullable = false, unique = true)
     private String isbn;
 
     @Column(name = "title")
@@ -19,6 +16,7 @@ public class Book {
 
     @Column(name = "author")
     private String author;
+
 
     public Book(String title, String isbn, String author) {
         this.author = author;
