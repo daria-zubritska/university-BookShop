@@ -2,7 +2,6 @@ package ua.university.kma.BookShop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,15 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import ua.university.kma.BookShop.Config.MyPasswordEncoder;
 import ua.university.kma.BookShop.Service.BookService;
 import ua.university.kma.BookShop.Service.UserService;
+import ua.university.kma.BookShop.Service.ValidationService;
 import ua.university.kma.BookShop.dto.BookDto;
 import ua.university.kma.BookShop.dto.model.Book;
 import ua.university.kma.BookShop.dto.model.User;
-//import ua.university.kma.BookShop.dto.model.WishList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Controller
 public class IndexController {
@@ -32,9 +30,6 @@ public class IndexController {
 
     @Autowired
     private MyPasswordEncoder myPasswordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @RequestMapping({"/", ""})
     public String index() {
@@ -98,8 +93,14 @@ public class IndexController {
             return "forward:/register";
         }
 
+        if (ValidationService.isRegFormValid(username, psw)) {
+            model.addAttribute("problem", "Username should only contain latin and numbers, " +
+                    "password must be 8-20 characters long");
+            return "forward:/register";
+        }
+
         if (userService.getUserByUsername(username) != null) {
-            model.addAttribute("problem", "This user alresdy exists");
+            model.addAttribute("problem", "This user already exists");
             return "forward:/register";
         }
 

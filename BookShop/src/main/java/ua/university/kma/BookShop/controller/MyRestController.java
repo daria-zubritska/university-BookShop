@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import ua.university.kma.BookShop.Config.MyPasswordEncoder;
 import ua.university.kma.BookShop.Service.BookService;
 import ua.university.kma.BookShop.Service.UserService;
+import ua.university.kma.BookShop.Service.ValidationService;
 import ua.university.kma.BookShop.dto.AddResponseDto;
 import ua.university.kma.BookShop.dto.FilterResponseDto;
 import ua.university.kma.BookShop.dto.model.Book;
-//import ua.university.kma.BookShop.dto.model.WishList;
 
 import java.util.List;
 
@@ -24,19 +24,10 @@ public class MyRestController {
     @Autowired
     private BookService bookService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MyPasswordEncoder myPasswordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @RequestMapping(value = "/add-book", method = RequestMethod.POST)
     public ResponseEntity<AddResponseDto> add(@RequestBody final Book bookDto) {
 
-        if (bookDto.getIsbn() == "" || bookDto.getTitle() == "" || bookDto.getAuthor() == "") {
+        if (ValidationService.isBookValid(bookDto)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .header(HttpHeaders.AUTHORIZATION, "generated-jwt-token")
                     .body(new AddResponseDto("Failure"));
