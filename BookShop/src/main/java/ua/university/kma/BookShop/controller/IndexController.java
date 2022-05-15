@@ -93,7 +93,7 @@ public class IndexController {
             return "forward:/register";
         }
 
-        if (ValidationService.isRegFormValid(username, psw)) {
+        if (!ValidationService.isRegFormValid(username, psw)) {
             model.addAttribute("problem", "Username should only contain latin and numbers, " +
                     "password must be 8-20 characters long");
             return "forward:/register";
